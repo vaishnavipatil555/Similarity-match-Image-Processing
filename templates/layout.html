@@ -1,0 +1,139 @@
+<!DOCTYPE html>
+<html>
+<head>
+	<meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+    <meta name="description" content="">
+    <meta name="author" content="">
+
+	{% if title %}
+		<title>Quality Assurance - {{ title }}</title>
+	{% else %}
+		<title>Quality Assurance </title>
+	{% endif %}
+
+	<!-- Bootstrap core CSS -->
+    <link href="{{ url_for('.static', filename='bootstrap/css/bootstrap.min.css') }}" rel="stylesheet">
+    <link rel="stylesheet" type="text/css" href="{{ url_for('.static', filename='custom.css') }}">
+    <link href="https://stackpath.bootstrapcdn.com/font-awesome/4.7.0/css/font-awesome.min.css" rel="stylesheet" integrity="sha384-wvfXpqpZZVQGK6TAh5PVlGOfQNHSoD2xbE+QkPxCAFlNEevoEH3Sl0sibVcOQVnN" crossorigin="anonymous">
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.4.1/jquery.min.js"></script>
+    <script src="{{ url_for('.static', filename='bootstrap/js/bootstrap.min.js') }}"></script>
+
+    {% block styles %}{% endblock %}
+    
+
+</head>
+<body>
+
+	<!-- Navigation -->
+    <nav class="navbar navbar-expand-lg navbar-dark bg-dark static-top lighten-4">
+        <div class="container">
+            <h3 style="color: #f0f8ff;">Quality Check</h3>
+            <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarResponsive" aria-controls="navbarResponsive" aria-expanded="false" aria-label="Toggle navigation">
+                <span class="navbar-toggler-icon"></span>
+            </button>
+            <div class="collapse navbar-collapse" id="navbarResponsive">
+                <ul class="navbar-nav ml-auto">
+                <li class="nav-item active">
+                    <a class="nav-link" href="/">Home
+                    <span class="sr-only">(current)</span>
+                    </a>
+                </li>
+                <li class="nav-item">
+                    <a class="nav-link" href="#footer">About</a>
+                </li>
+                <li class="nav-item">                    
+                    <div class="btn-group">
+                      <a class="nav-link dropdown-toggle" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+                        Services
+                      </a>
+                      <div class="dropdown-menu">
+                        <a class="dropdown-item" href="/products">Show Product Details</a>
+                        <a class="dropdown-item" href="/add_products">Add Product Details</a>
+                        <a class="dropdown-item" href="/inspect">Start Inspection</a>
+                        <a class="dropdown-item" href="/statistics">Check Statistics</a>
+                        <a class="dropdown-item" href="/help">Help Manual</a>
+                      </div>
+                    </div>
+                </li>
+                <li class="nav-item">
+                    <a class="nav-link" href="#footer">Contact</a>
+                </li>
+                </ul>
+            </div>
+        </div>
+    </nav>
+
+    {% with messages = get_flashed_messages(with_categories=true) %}
+        {% if messages %}
+            {% for category, message in messages %}
+                <div class="alert alert-{{ category }}">
+                    {{ message }}
+                </div>
+            {% endfor %}
+        {% endif %}
+    {% endwith %}    
+
+	{% block content %}{% endblock %}
+	
+    {% block scripts %}{% endblock %}
+    
+    
+	<!-- Bootstrap core JavaScript -->
+    <!-- <script src="{{ url_for('.static', filename='jquery/jquery.slim.min.js') }}"></script>
+    <script src="{{ url_for('.static', filename='bootstrap/js/bootstrap.bundle.min.js') }}"></script> -->
+    <footer class="page-footer font-small blue pt-4" style="background-color: rgb(43, 42, 42); margin-top: 200px;" id="footer">
+
+        <!-- Footer Links -->
+        <div class="container-fluid text-center text-md-left">
+      
+          <!-- Grid row -->
+          <div class="row">
+      
+            <!-- Grid column -->
+            <div class="col-md-12 mt-md-0 mt-3">
+      
+              <!-- Content -->
+              <h5 style="color: rgba(255, 255, 255, 0.774);">Quality Assurance</h5> 
+              <hr style="border-top: 1px solid white;">     
+            </div>
+      
+          </div>
+      
+      
+        </div>
+        <h6 style="color: rgba(255, 255, 255, 0.397); padding-left: 20%;">Developed by: </h6><br>
+        <div class="row">
+      
+            <div class="col-md-6 mt-md-0 mt-3">
+                <ul style="padding-left: 70%;">
+                    <li style="color: rgba(255, 255, 255, 0.397); font-size: small;">Prachi Polakhare</li>
+                    <li style="color: rgba(255, 255, 255, 0.397); font-size: small;">Sonali Patole</li>
+                    <li style="color: rgba(255, 255, 255, 0.397); font-size: small;">Vaishnavi Patil</li>
+                </ul>
+            </div>
+
+            <div class="col-md-6 mt-md-0 mt-3">
+                <ul style="list-style: none; ">
+                    <li style="color: rgba(255, 255, 255, 0.397); font-size: small;">prachipolakhare@gmail.com</li>
+                    <li style="color: rgba(255, 255, 255, 0.397); font-size: small;">sonalipatole@gmail.com</li>
+                    <li style="color: rgba(255, 255, 255, 0.397); font-size: small;">vaishnavipatil@gmail.com</li>
+                </ul>
+            </div>
+      
+          </div>
+          <!-- Grid row -->
+      
+        </div>
+        <!-- Footer Links -->
+      
+        <!-- Copyright -->
+        <div class="footer-copyright text-center py-3" style="color: white;">© 2020 Copyright:
+          <a href="#"> TYIT students</a>
+        </div>
+        <!-- Copyright -->
+      
+      </footer>
+      <!-- Footer -->
+</body>
+</html>

@@ -1,0 +1,85 @@
+{% extends 'layout.html' %}
+
+{% block styles %}
+    <link href="{{ url_for('.static', filename='bootstrap/css/bootstrap.min.css') }}" rel="stylesheet">
+    <link rel="stylesheet" type="text/css" href="{{ url_for('.static', filename='register.css') }}">    
+    
+    <style>
+        .button {
+            background-color: rgb(30, 32, 30);
+            border: none;
+            color: white;
+            padding: 20px;
+            text-align: center;
+            text-decoration: none;
+            display: inline-block;
+            font-size: 16px;
+            margin: 4px 2px;
+            position: fixed;
+          }
+          
+          .button5 {border-radius: 50%;}
+    </style>
+{% endblock %}
+
+{% block content %}
+<legend class="border-bottom mb-4" style="text-align: center;">Help Manual</legend>
+
+<button class="button button5"><b><a href="#top" style="text-decoration: none; color: white;">^</a></b></button>
+<div class="list-group" id="top">
+    <a class="list-group-item list-group-item-action" href="#add" style="text-align: center;">Add Product</a>
+    <a class="list-group-item list-group-item-action" href="#show" style="text-align: center;">Show Product</a>
+    <a class="list-group-item list-group-item-action" href="#stats" style="text-align: center;">Check Statistics</a>
+  </div>
+<div class="container">
+    <div class="row">
+        <div class="col-6">
+            <h6 id="add">Add Product</h6><br>
+            <p>
+                <ol>
+                    <li>Select 'Add Product Details' option on home page<br>
+                        <img src="{{ url_for('images', filename='Screenshot (296).png') }}" style="height: 300px; width: 400px;"><br>
+                    </li>
+                    <li>Enter product name and select product image<br>
+                        <img src="{{ url_for('images', filename='Screenshot (299).png') }}" style="height: 300px; width: 400px;"><br>
+                        <img src="{{ url_for('images', filename='Screenshot (300).png') }}" style="height: 300px; width: 400px;"><br>
+                        <img src="{{ url_for('images', filename='Screenshot (301).png') }}" style="height: 300px; width: 400px;"><br>
+                    </li>
+                </ol>
+            </p>    
+        </div>
+        
+        <div class="col-6">
+            <h6 id="show">Show Product</h6><br>
+            <p>
+                <ol>
+                    <li>Select 'Product Details' option on home page<br>
+                        <img src="{{ url_for('images', filename='Screenshot (296).png') }}" style="height: 300px; width: 400px;"><br>
+                    </li>
+                    <li>Enter product name and select product image<br>
+                        <img src="{{ url_for('images', filename='Screenshot (302).png') }}" style="height: 300px; width: 400px;"><br>
+                    </li>
+                </ol>
+            </p> 
+            <h6 id="stats">Check Statistics</h6><br>
+            <p>
+                <ol>
+                    <li>Select 'Check Statistics' option on home page<br>
+                        <img src="{{ url_for('images', filename='Screenshot (296).png') }}" style="height: 300px; width: 400px;"><br>
+                    </li>
+                    <li>Enter product name and select product image<br>
+                        <img src="{{ url_for('images', filename='Screenshot (304).png') }}" style="height: 300px; width: 400px;"><br>
+                    </li>
+                </ol>
+            </p>    
+        </div>
+    </div>
+</div>
+
+{% endblock %}
+
+{% block scripts %}
+    <!-- <script src="{{ url_for('.static', filename='jquery/jquery.slim.min.js') }}"></script> -->
+    <!-- <script src="{{ url_for('.static', filename='bootstrap/js/bootstrap.bundle.min.js') }}"></script> -->
+{% endblock %}
+

@@ -1,0 +1,26 @@
+{% extends 'layout.html' %}
+
+{% block styles %}
+    <link href="{{ url_for('.static', filename='bootstrap/css/bootstrap.min.css') }}" rel="stylesheet">
+    <link rel="stylesheet" type="text/css" href="{{ url_for('.static', filename='register.css') }}">
+
+{% endblock %}
+
+{% block content %}
+<legend class="border-bottom mb-4" style="text-align: center;">Statistics</legend>
+<form class="forms" method="POST" action="">
+    <legend class="border-bottom mb-4">Enter Product</legend>
+    <div class="form-group">
+        <label for="product">Product name</label>
+        <input type="product" class="form-control" id="product" name="product" placeholder="Enter product name to inspect">
+    </div>
+    <input type="submit" class="btn btn-primary" name="submit" value="Submit">
+</form>
+    
+{% endblock %}
+
+{% block scripts %}
+    <!-- <script src="{{ url_for('.static', filename='jquery/jquery.slim.min.js') }}"></script> -->
+    <!-- <script src="{{ url_for('.static', filename='bootstrap/js/bootstrap.bundle.min.js') }}"></script> -->
+{% endblock %}
+

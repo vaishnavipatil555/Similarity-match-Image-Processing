@@ -1,0 +1,37 @@
+body, html {
+	height: 100%;
+}
+a{
+	color: white !important;
+	text-decoration: none !important;
+}
+body{
+	background-image: url('home.jpg'); 
+	height: 100%;
+	background-position: center;
+    background-repeat: no-repeat;
+	background-size: cover;
+}
+.content{
+	padding-top: 2cm;
+	padding-bottom: 2cm;
+}
+.content-statistics{
+	padding-top: 6cm;
+	padding-bottom: 5cm;
+}
+.btn{
+	padding-top: 0.5cm;
+	padding-bottom: 0.5cm;
+	font-size: xx-large;
+	align-self: center;
+	align-content: center;
+	padding-left: 2cm;
+	padding-right: 2cm;
+}
+.imag{
+	background-image: url('home.jpg'); 
+}
+.container {
+    padding: 2rem 0rem;
+  }

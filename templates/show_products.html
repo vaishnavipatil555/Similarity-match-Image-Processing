@@ -1,0 +1,30 @@
+{% extends 'layout.html' %}
+
+{% block styles %}
+    <link href="{{ url_for('.static', filename='bootstrap/css/bootstrap.min.css') }}" rel="stylesheet">
+    <link rel="stylesheet" type="text/css" href="{{ url_for('.static', filename='register.css') }}">
+
+{% endblock %}
+
+{% block content %}
+    <legend class="border-bottom mb-4" style="text-align: center;">Show Product</legend>
+    <table style="margin-left: 20%; width: 60%;"> 
+        <tr>
+            <th style="padding-left: 20px; text-align: center;">Product Name</th>
+            <th style="padding-left: 20px; text-align: center;">Product Image</th>
+        </tr>
+        {% for item in data %}
+            <tr>
+                <td style="text-align: center;">{{item[0]}}</td>
+                <td style="text-align: center;"><img src="{{ url_for('images', filename=item[1]) }}" style="height: 200px; width: 300px;"></td>
+                
+            </tr>
+        {% endfor %}
+    </table>
+{% endblock %}
+
+{% block scripts %}
+    <!-- <script src="{{ url_for('.static', filename='jquery/jquery.slim.min.js') }}"></script> -->
+    <!-- <script src="{{ url_for('.static', filename='bootstrap/js/bootstrap.bundle.min.js') }}"></script> -->
+{% endblock %}
+

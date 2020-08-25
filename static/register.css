@@ -1,0 +1,31 @@
+.forms{
+    margin-top: 1cm;
+    margin-left: 7cm;
+    margin-right: 7cm;
+}
+.border-bottom {
+    border-bottom: 1px solid cadetblue!important;
+}
+legend{
+    border-bottom-width: 1px;
+    border-bottom-style: solid; 
+    border-bottom-color: cadetblue !important;  
+}
+h1{
+    margin-left: 7cm;
+    margin-right: 7cm;
+    margin-top: 3cm;
+    text-decoration-color: crimson;
+    font-family: 'Courier New', Courier, monospace;
+}
+small{
+    margin-top: 1cm;
+    margin-left: 7cm;
+}
+
+  
+/*.message{    
+    margin-top: 1cm;
+    margin-left: 7cm;
+    margin-right: 7cm;
+}*/

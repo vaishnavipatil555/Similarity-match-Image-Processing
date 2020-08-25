@@ -1,0 +1,25 @@
+{% extends 'layout.html' %}
+
+{% block styles %}
+    <link rel="stylesheet" type="text/css" href="{{ url_for('.static', filename='home.css') }}">
+    <link rel="stylesheet" type="text/css" href="{{ url_for('.static', filename='bootstrap/css/bootstrap.min.css') }}">
+
+{% endblock %}
+
+{% block content %}
+    <div class="content">
+        <div class="container">
+            <a href="/products" ><button type="button" class="btn btn-primary btn-lg btn-block">Product Details</button></a><br>
+            <a href="/add_products" ><button type="button" class="btn btn-danger btn-lg btn-block">Add Product Details</button></a><br>
+            <a href="/inspect" ><button type="button" class="btn btn-secondary btn-lg btn-block">Start Inspection</button></a><br>
+            <a href="/statistics" ><button type="button" class="btn btn-success btn-lg btn-block">Check Statistics</button></a><br>
+            <a href="/help" ><button type="button" class="btn btn-warning btn-lg btn-block">Help Manual</button></a>
+        </div>
+    </div>
+{% endblock %}
+
+{% block scripts %}
+    <!-- <script src="{{ url_for('.static', filename='jquery/jquery.slim.min.js') }}"></script> -->
+    <!-- <script src="{{ url_for('.static', filename='bootstrap/js/bootstrap.bundle.min.js') }}"></script> -->
+{% endblock %}
+
