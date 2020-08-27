@@ -14,7 +14,7 @@ app = Flask(__name__)
 
 regex = '^\w+([\.-]?\w+)*@\w+([\.-]?\w+)*(\.\w{2,3})+$'
 
-url = "http://192.168.1.4:8080/shot.jpg"
+url = "http://192.168.43.1:8080/shot.jpg"
 
 db = yaml.load(open('db.yaml'))
 app.config['MYSQL_HOST'] = db['mysql_host']
@@ -62,16 +62,13 @@ def resize(img, maximum_small_edge=500):
 	return cv2.resize(img, (0,0), fx=scale_ratio, fy=scale_ratio)
 
 def check(img1, img2, show_images=0):
+    orb = cv2.ORB_create()
+    kp1, des1 = orb.detectAndCompute(img1, None)
+    kp2, des2 = orb.detectAndCompute(img2, None)
 
-    img_control = util.resize(img1)
-	img_control = util.resize(img_control)
-
-	img_query_aligned = align.get_warped_image(img_control, img2)
-
-	img_diff = difference.get_difference_image(img_control, img_query_aligned, show_images)
-	quality_score = difference.get_quality_score(img_diff)
-
-    return quality_score
+    bf = cv2.BFMatcher(cv2.NORM_HAMMING, crossCheck=True)
+    matches = bf.match(des1, des2)
+    return len(matches)
 
 
 @app.route('/')
@@ -130,9 +127,8 @@ def inspect():
                 img_arr = np.array(bytearray(img_resp.content), dtype = np.uint8)
                 img2 = cv2.imdecode(img_arr, -1)
                 cv2.imshow('image2', img2)
-                #score = check(img1, img2)
                 val = check(img1, img2)
-                if val >= 80:
+                if val >= 150:
                     if flag == 0:
                         cur.execute("insert into pstats(pname, pdate, passed, failed) values(%s, %s, %s, %s)", ([pname], dt.date.today().strftime("%Y-%m-%d"), 1, 0))
                         cur.execute("select * from pstats where pname = %s and pdate = now()", [pname])
