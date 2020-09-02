@@ -140,7 +140,6 @@ def add():
         pname = pDetails['product']
         pimage = pDetails['upload']
         filename = session['username'] + '_' + pimage
-        pname = session['username'] + '_' + pname
         dname = 'static'
         spath = os.path.join(os.getcwd(), 'srcimages')
         spath = os.path.join(spath, pimage)
@@ -163,7 +162,6 @@ def inspect():
         pDetails = request.form
         pname = pDetails['product']
         cur = mysql.connection.cursor()
-        pname = session['username'] + '_' + pname
         count = cur.execute("select * from pdetails where pname = %s", [pname])
         record = cur.fetchall()
         cur.close()
@@ -171,7 +169,7 @@ def inspect():
                 flash('Product name is wrong!', 'alert')
         else:
             flash(f'Item selected successfully!', 'success')
-            img_name = "images/" + record[0][1]
+            img_name = "static/" + record[0][2]
 
             img1 = cv2.imread(img_name)
             cur = mysql.connection.cursor()
@@ -195,11 +193,11 @@ def inspect():
                         cur.execute("insert into pstats(pname, pdate, passed, failed, username) values(%s, %s, %s, %s)", ([pname], dt.date.today().strftime("%Y-%m-%d"), 1, 0, [session['username']]))
                         cur.execute("select * from pstats where pname = %s and pdate = now() and username = %s", ([pname], [session['username']]))
                         record = cur.fetchall()
-                        flash(f'Pass!', 'success')
+                        flash(f'Pass! { val }', 'success')
                         flag = 1
                     else:
                         cur.execute("update pstats set passed = passed + %s where pname = %s and pdate = %s and username = %s", (1, [pname], dt.date.today().strftime("%Y-%m-%d"), [session['username']]))
-                        flash('Pass!', 'success')
+                        flash(f'Pass! { val }', 'success')
 
                 else:
                     if flag == 0:
@@ -227,7 +225,6 @@ def stats():
     if request.method == 'POST':
         pDetails = request.form
         pname = pDetails['product']
-        pname = session['username'] + '_' + pname
         cur = mysql.connection.cursor()
         count = cur.execute("select * from pdetails where pname = %s and username = %s", ([pname], session['username']))
         record = cur.fetchall()
@@ -255,7 +252,7 @@ def logout():
         return redirect(url_for('login'))
     else:
         session['username'] = ''
-    return render_template('login.html')
+    return redirect(url_for('login'))
 
 
 
