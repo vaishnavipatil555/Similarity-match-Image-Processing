@@ -7,16 +7,18 @@ import requests
 import cv2
 import numpy as np
 import time
+import shutil
 import datetime as dt
-from src import align, difference, util
 
 app = Flask(__name__)
+
+
 
 regex = '^\w+([\.-]?\w+)*@\w+([\.-]?\w+)*(\.\w{2,3})+$'
 
 url = "http://192.168.43.1:8080/shot.jpg"
 
-db = yaml.load(open('db.yaml'))
+db = yaml.load(open('db1.yaml'))
 app.config['MYSQL_HOST'] = db['mysql_host']
 app.config['MYSQL_USER'] = db['mysql_user']
 app.config['MYSQL_PASSWORD'] = db['mysql_password']
@@ -24,7 +26,7 @@ app.config['MYSQL_DB'] = db['mysql_db']
 
 mysql = MySQL(app)
 
-app.config['SECRET_KEY'] = '5d8ea3a2c51c144d49f0ee95b2bf50bd'
+app.config['SECRET_KEY'] = os.urandom(24)
 
 app.add_url_rule('/images/<path:filename>', endpoint='images', view_func=app.send_static_file)
 
@@ -65,6 +67,12 @@ def check(img1, img2, show_images=0):
     orb = cv2.ORB_create()
     kp1, des1 = orb.detectAndCompute(img1, None)
     kp2, des2 = orb.detectAndCompute(img2, None)
+<<<<<<< HEAD
+
+    bf = cv2.BFMatcher(cv2.NORM_HAMMING, crossCheck=True)
+    matches = bf.match(des1, des2)
+    return len(matches)
+=======
 
     bf = cv2.BFMatcher(cv2.NORM_HAMMING, crossCheck=True)
     matches = bf.match(des1, des2)
@@ -72,25 +80,82 @@ def check(img1, img2, show_images=0):
 
 
 @app.route('/')
+@app.route('/register', methods=['GET', 'POST'])
+def register():
+    if request.method == 'POST':
+        udetails = request.form
+        uname = udetails['username']
+        password = udetails['password']
+        conf_pwd = udetails['confirm_password']
+        if password == conf_pwd and len(password) > 5:
+            cur = mysql.connection.cursor()
+            try:
+                cur.execute("insert into users(username, password) values(%s, %s)", (uname, password))
+                flash(f'Account created for {uname}!', 'success')
+                cur.close()
+                mysql.connection.commit()
+            except:
+                flash(f'Something went wrong! Try another username', 'alert')   
+        else:
+            flash(f'Passwords are not matching!', 'alert')
+    return render_template('register.html')
+
+
+@app.route('/login', methods=['GET', 'POST'])
+def login():
+    if request.method == 'POST':
+        udetails = request.form
+        uname = udetails['username']
+        password = udetails['password']
+        if len(password) > 5:
+            cur = mysql.connection.cursor()
+            count = cur.execute("select * from users where username = %s and password = %s", (uname, password))
+            cur.close()
+            if count > 0:
+                session['username'] = uname
+                flash(f'Logged in successfully for {uname}!', 'success')
+                return redirect(url_for('home'))
+            else:
+                flash(f'No such user found!', 'alert')   
+        else:
+            flash(f'Password is wrong!', 'alert')
+    return render_template('login.html')
+>>>>>>> 6522bb039a16684b3bd3da580db89d03b245a120
+
+
 @app.route('/home')
 def home():
+    if 'username' not in session:
+        return redirect(url_for('login'))
     return render_template('home.html')
 
 @app.route('/products')
 def show():
+    if 'username' not in session:
+        return redirect(url_for('login'))
     cur = mysql.connection.cursor()
-    cur.execute("select * from pdetails")
+    cur.execute("select pname, pimage from pdetails where username = %s", [session['username']])
     data = cur.fetchall()
     return render_template('show_products.html', data = data)
     
 @app.route('/add_products', methods=['GET', 'POST'])
 def add():
+    if 'username' not in session:
+        return redirect(url_for('login'))
     if request.method == 'POST':
         pDetails = request.form
         pname = pDetails['product']
         pimage = pDetails['upload']
+        filename = session['username'] + '_' + pimage
+        dname = 'static'
+        spath = os.path.join(os.getcwd(), 'srcimages')
+        spath = os.path.join(spath, pimage)
+        dpath = os.path.join(os.getcwd(), dname)
+        dpath = os.path.join(dpath, filename)
+        shutil.copyfile(spath, dpath)        
+        pimage = filename
         cur = mysql.connection.cursor()
-        cur.execute("insert into pdetails values(%s, %s)", (pname, pimage))
+        cur.execute("""insert into pdetails (pname, pimage, username) values (%s, %s, %s)""", (pname, pimage, session['username']))
         cur.close()
         mysql.connection.commit()
         flash(f'Details inserted for {pname}!', 'success')
@@ -98,6 +163,8 @@ def add():
 
 @app.route('/inspect', methods=['GET', 'POST'])
 def inspect():    
+    if 'username' not in session:
+        return redirect(url_for('login'))
     if request.method == 'POST':
         pDetails = request.form
         pname = pDetails['product']
@@ -109,7 +176,7 @@ def inspect():
                 flash('Product name is wrong!', 'alert')
         else:
             flash(f'Item selected successfully!', 'success')
-            img_name = "images/" + record[0][1]
+            img_name = "static/" + record[0][2]
 
             img1 = cv2.imread(img_name)
             cur = mysql.connection.cursor()
@@ -130,25 +197,25 @@ def inspect():
                 val = check(img1, img2)
                 if val >= 150:
                     if flag == 0:
-                        cur.execute("insert into pstats(pname, pdate, passed, failed) values(%s, %s, %s, %s)", ([pname], dt.date.today().strftime("%Y-%m-%d"), 1, 0))
-                        cur.execute("select * from pstats where pname = %s and pdate = now()", [pname])
+                        cur.execute("insert into pstats(pname, pdate, passed, failed, username) values(%s, %s, %s, %s)", ([pname], dt.date.today().strftime("%Y-%m-%d"), 1, 0, [session['username']]))
+                        cur.execute("select * from pstats where pname = %s and pdate = now() and username = %s", ([pname], [session['username']]))
                         record = cur.fetchall()
-                        flash(f'Pass! { len(record) }', 'success')
+                        flash(f'Pass! { val }', 'success')
                         flag = 1
                     else:
-                        cur.execute("update pstats set passed = passed + %s where pname = %s and pdate = %s", (1, [pname], dt.date.today().strftime("%Y-%m-%d")))
-                        flash('Pass!', 'success')
+                        cur.execute("update pstats set passed = passed + %s where pname = %s and pdate = %s and username = %s", (1, [pname], dt.date.today().strftime("%Y-%m-%d"), [session['username']]))
+                        flash(f'Pass! { val }', 'success')
 
                 else:
                     if flag == 0:
-                        cur.execute("insert into pstats(pname, pdate, passed, failed) values(%s, %s, %s, %s)", ([pname], dt.date.today().strftime("%Y-%m-%d"), 0, 1))
+                        cur.execute("insert into pstats(pname, pdate, passed, failed, username) values(%s, %s, %s, %s, %s)", ([pname], dt.date.today().strftime("%Y-%m-%d"), 0, 1, [session['username']]))
                         cur.execute("select * from pstats where pname = %s and pdate = now()", [pname])
                         record = cur.fetchall()
-                        flash(f'Fail! { len(record) }', 'alert')
+                        flash(f'Fail! { val }', 'alert')
                         flag = 1
                     else:
-                        cur.execute("update pstats set failed = failed + %s where pname = %s and pdate = %s", (1, [pname], dt.date.today().strftime("%Y-%m-%d")))
-                        flash('Fail!', 'alert')
+                        cur.execute("update pstats set failed = failed + %s where pname = %s and pdate = %s and username = %s", (1, [pname], dt.date.today().strftime("%Y-%m-%d"), session['username']))
+                        flash(f'Fail! { val }', 'alert')
                 cur.close()
                 mysql.connection.commit()
                 if cv2.waitKey(1) == 27:
@@ -160,11 +227,13 @@ def inspect():
     
 @app.route('/statistics', methods=['GET', 'POST'])
 def stats():
+    if 'username' not in session:
+        return redirect(url_for('login'))
     if request.method == 'POST':
         pDetails = request.form
         pname = pDetails['product']
         cur = mysql.connection.cursor()
-        count = cur.execute("select * from pdetails where pname = %s", [pname])
+        count = cur.execute("select * from pdetails where pname = %s and username = %s", ([pname], session['username']))
         record = cur.fetchall()
         cur.close()
         if count == 0:
@@ -172,7 +241,7 @@ def stats():
         else:
             flash(f'Item selected successfully!', 'success')
             cur = mysql.connection.cursor()
-            cur.execute("select * from pstats where pname = %s", [pname])
+            cur.execute("select pname, pdate, passed, failed from pstats where pname = %s and username = %s", ([pname], session['username']))
             data = cur.fetchall()
             return render_template('stats.html', data = data)
     return render_template('statistics.html')
@@ -180,7 +249,17 @@ def stats():
     
 @app.route('/help')
 def help():
+    if 'username' not in session:
+        return redirect(url_for('login'))
     return render_template('manual.html')
+
+@app.route('/logout')
+def logout():
+    if 'username' not in session:
+        return redirect(url_for('login'))
+    else:
+        session['username'] = ''
+    return redirect(url_for('login'))
 
 
 
